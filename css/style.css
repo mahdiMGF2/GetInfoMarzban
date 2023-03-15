@@ -18,7 +18,8 @@ input {
 }
 
 body {
-    background-color: #434955
+    background: linear-gradient(64deg, #18349d, #cebefc) no-repeat;
+    height: 95vh;
 }
 
 .page-get {
@@ -118,13 +119,13 @@ input[type="submit"] {
 .title{
     margin-top: 2%;
     margin-bottom: 30px;
-    color: #ded9d9;
+    color: #fff;
     text-align: center;
 }
 .box{
     display: flex;
     justify-content: center;
-    background-color: #cccccc;
+    background-color: #fff;
     flex-direction: column;
     box-shadow: 0 0 3px 1px #c1c1c1;
     max-width: 560px;
