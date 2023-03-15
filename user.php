@@ -1,8 +1,34 @@
 <?php
 include('config.php');
-//username get
+
+//get token
+$url_get_token = $address_server . 'api/admin/token';
+$data_token = array(
+    'username' => $username,
+    'password' => $password
+);
+$options = array(
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => http_build_query($data_token),
+    CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/x-www-form-urlencoded',
+        'accept: application/json'
+    )
+);
+$curl_token = curl_init($url_get_token);
+curl_setopt_array($curl_token, $options);
+$token = curl_exec($curl_token);
+curl_close($curl_token);
+
+$body = json_decode($token, true);
+$token = $body['access_token'];
+
+
+
+//info get
 $usernameac = $_GET['usernames'];
-$url = $ip_port.'/api/user/'.$usernameac;
+$url = $address_server . 'api/user/' . $usernameac;
 $header_value = 'Bearer ';
 
 $ch = curl_init();
@@ -11,17 +37,14 @@ curl_setopt($ch, CURLOPT_HTTPGET, true);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Accept: application/json',
-    'Authorization: ' . $header_value . $token));
+    'Authorization: ' . $header_value . $token
+));
 
 $output = curl_exec($ch);
 curl_close($ch);
 $Data = json_decode($output, true);
-
-
 //username
-$username = $Data['username'];
-
-
+$username_account = $Data['username'];
 //status
 $status = $Data['status'];
 switch ($status) {
@@ -32,6 +55,10 @@ switch ($status) {
     case 'limited':
         $color_active = "#bf2e2e";
         $text_status = "پایان حجم";
+        break;
+    case 'disabled':
+        $color_active = "#877bff";
+        $text_status = "حساب غیرفعال";
         break;
 
     default:
@@ -72,9 +99,7 @@ if (round($dataLimit / 1073741824, 2) != 0) {
     if ($min < 1) {
         $RemainingVolume = $min * 1000 . "MB";
     }
-    if (round($dataLimit / 1073741824, 2) - round($usedTraffic / 1073741824, 2)< 1  ) {
-        $RemainingVolume = "نامشخص";
-    }}
+}
 
 
 //expire config
@@ -104,15 +129,16 @@ if ($timeDiff > 0) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>خروجی اطلاعات</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
-    <h3 class="title"><span><?php echo $username; ?></span> نمایش اطلاعات کاربر</h3>
+    <h3 class="title"><span><?php echo $username_account; ?></span> نمایش اطلاعات کاربر</h3>
     <div class="box">
         <div class="list username">
             <div class="value">
-                <h4><?php echo $username; ?></h4>
+                <h4><?php echo $username_account; ?></h4>
             </div>
             <div class="user">
                 <h4>: نام کاربری</h4>
@@ -167,10 +193,12 @@ if ($timeDiff > 0) {
             </div>
         </div>
     </div>
-    <div class="btndiv">
-    <a href="./index.html" class="btn">بازگشت به صفحه اصلی</a>
 
     </div>
+    <div class="btndiv">
+        <a href="./index.html" class="btn">بازگشت به صفحه اصلی</a>
+    </div>
+    <script src="./js/app.js"></script>
 </body>
 
 </html>
