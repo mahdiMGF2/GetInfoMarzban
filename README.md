@@ -5,8 +5,6 @@
 <br> install panel marzban use docker
 <br> server os ubuntu
 
- روی هاست نمی توان نصب کرد
-
 
 
 #آموزش نصب 
